@@ -39,7 +39,7 @@ stages:
       inputs:
         secureFile: $(backend_and_main_secret_file_id)
 
-    - template: terraform.yml@Yaml_Templates
+    - template: pipeline/terraform.yml@Yaml_Templates
       parameters:
         version: $(terraform_version)
         path: './test1/'
@@ -68,7 +68,7 @@ stages:
         deploy:
           steps:
 
-          - template: terraform.yml@Yaml_Templates
+          - template: pipeline/terraform.yml@Yaml_Templates
             parameters:
               version: $(terraform_version)
               package_name: 'test1'
@@ -97,7 +97,7 @@ stages:
             inputs:
               secureFile: $(backend_and_main_secret_file_id)
 
-          - template: terraform.yml@Yaml_Templates
+          - template: pipeline/terraform.yml@Yaml_Templates
             parameters:
               version: $(terraform_version)
               package_name: 'test1'

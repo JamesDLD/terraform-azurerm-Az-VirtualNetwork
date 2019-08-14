@@ -1,13 +1,5 @@
 #Multi-stage YAML pipeline demo.
 name: $(BuildDefinitionName).$(DayOfYear)$(Rev:.r)
-
-schedules:
-- cron: "30 8 * * 4"
-  branches:
-    include:
-    - master
-  displayName: Weekly Thursday 8h30 am UTC build
-  always: true
   
 variables:
 - name: vmImageName

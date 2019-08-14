@@ -17,14 +17,15 @@ variables:
 - name: artifact_name
   value: Az-VirtualNetwork
 - name: backend_and_main_secret_file_id
-  value: 'artik.json'
+  value: 'backend-main-jdld-1.json'
 
 resources:
   repositories:
     - repository: Yaml_Templates # identifier (A-Z, a-z, 0-9, and underscore)
-      type: git
-      name: network-poc/Yaml-Templates
-      ref: refs/tags/0.0.1  # ref name to use, defaults to 'refs/heads/master'
+      type: github
+      endpoint: JamesDLD  # name of the service connection to use (for non-Azure Repos types)
+      name: JamesDLD/terraform
+      #ref: refs/tags/0.0.1  # ref name to use, defaults to 'refs/heads/master'
 
 stages:
 - stage: Build

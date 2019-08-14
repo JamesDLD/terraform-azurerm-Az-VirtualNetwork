@@ -6,13 +6,12 @@ Test
 Usage
 -----
 ```hcl
-
 #Set the terraform backend
 terraform {
   backend "azurerm" {
     storage_account_name = "infrsand1vpcjdld1"
     container_name       = "tfstate"
-    key                  = "Az-VirtualNetwork.tfstate"
+    key                  = "Az-VirtualNetwork.test.tfstate"
     resource_group_name  = "infr-jdld-noprd-rg1"
   }
 }
@@ -61,6 +60,12 @@ variable "virtual_networks" {
       address_space = ["198.18.4.0/24"]
       dns_servers   = ["8.8.8.8"]
     }
+
+    vnet3 = {
+      id            = "3"
+      prefix        = "npd"
+      address_space = ["10.0.0.0/24"]
+    }
   }
 }
 
@@ -108,7 +113,7 @@ variable "subnets" {
       name           = "AzureBastionSubnet" #(Mandatory) 
       address_prefix = "198.18.4.0/27"      #(Mandatory) 
     }
-  */
+    */
 
   }
 }

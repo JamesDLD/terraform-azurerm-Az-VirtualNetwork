@@ -1,0 +1,12 @@
+# Compiled files
+*.tfstate
+*.tfstate.backup
+*.DS_Store
+*.tfstate.lock.info
+
+# Directory
+.terraform/
+
+# Secret files
+**/secret/*.json
+**/secret/*.tfvars

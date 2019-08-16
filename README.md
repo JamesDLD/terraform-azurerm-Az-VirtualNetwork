@@ -2,19 +2,13 @@ Test
 -----
 [![Build Status](https://dev.azure.com/jamesdld23/vpc_lab/_apis/build/status/JamesDLD.terraform-azurerm-Az-VirtualNetwork?branchName=master)](https://dev.azure.com/jamesdld23/vpc_lab/_build/latest?definitionId=13&branchName=master)
 
+Requirement
+-----
+Terraform v0.12.6 and above. 
 
 Usage
 -----
 ```hcl
-#Set the terraform backend
-terraform {
-  backend "azurerm" {
-    storage_account_name = "infrsand1vpcjdld1"
-    container_name       = "tfstate"
-    key                  = "Az-VirtualNetwork.test.tfstate"
-    resource_group_name  = "infr-jdld-noprd-rg1"
-  }
-}
 
 #Set the Provider
 provider "azurerm" {
@@ -221,7 +215,7 @@ variable "net_additional_tags" {
 
 #Call module
 module "Az-VirtualNetwork-Demo" {
-  source                      = "git::https://github.com/JamesDLD/terraform-azurerm-Az-VirtualNetwork.git"
+  source                      = "JamesDLD/Az-VirtualNetwork/azurerm"
   net_prefix                  = "myproduct-perimeter"
   network_resource_group_name = "infr-jdld-noprd-rg1"
   virtual_networks            = var.virtual_networks

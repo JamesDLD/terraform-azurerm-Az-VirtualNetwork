@@ -213,7 +213,7 @@ variable "net_additional_tags" {
 
 #Call module
 module "Az-VirtualNetwork-Demo" {
-  source                      = "git::https://github.com/JamesDLD/terraform-azurerm-Az-VirtualNetwork.git"
+  source                      = "JamesDLD/Az-VirtualNetwork/azurerm"
   net_prefix                  = "myproduct-perimeter"
   network_resource_group_name = "infr-jdld-noprd-rg1"
   virtual_networks            = var.virtual_networks

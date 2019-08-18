@@ -14,7 +14,6 @@ provider "azurerm" {
   subscription_id = var.subscription_id
   client_id       = var.client_id
   client_secret   = var.client_secret
-  version         = "1.31.0"
 }
 
 #Set authentication variables
@@ -224,15 +223,4 @@ module "Az-VirtualNetwork-Demo" {
   pips                        = var.pips
   vnets_to_peer               = var.vnets_to_peer
   net_additional_tags         = var.net_additional_tags
-}
-
-#Test when a Terraform property has been deprecated.
-resource "azurerm_key_vault" "test" {
-  name                        = "myproductperimetertest"
-  location                    = "northeurope"
-  resource_group_name         = "infr-jdld-noprd-rg1"
-  enabled_for_disk_encryption = true
-  tenant_id                   = var.tenant_id
-  sku { name = "standard" }
-  tags = var.net_additional_tags
 }

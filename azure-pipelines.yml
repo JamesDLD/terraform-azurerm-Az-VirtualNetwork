@@ -1,5 +1,13 @@
 #Multi-stage YAML pipeline demo.
 name: $(BuildDefinitionName).$(DayOfYear)$(Rev:.r)
+
+schedules:
+- cron: "45 8 * * 4"
+  branches:
+    include:
+    - master
+  displayName: Weekly Thursday 8h45 am UTC build
+  always: true
   
 variables:
 - name: vmImageName
@@ -60,8 +68,7 @@ stages:
     displayName: Terraform Apply - Resources creation
     pool:
       vmImage: $(vmImageName)
-    # creates an environment if it doesn’t exist
-    environment: 'staging'
+    environment: 'Terraform_Apply'
     strategy:
       # default deployment strategy
       runOnce:
@@ -84,8 +91,7 @@ stages:
     displayName: Terraform Destroy - Script ok, now deleting the resources
     pool:
       vmImage: $(vmImageName)
-    # creates an environment if it doesn’t exist
-    environment: 'production'
+    environment: 'Terraform_Destroy'
     strategy:
       # default deployment strategy
       runOnce:

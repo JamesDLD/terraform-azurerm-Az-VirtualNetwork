@@ -6,9 +6,9 @@ Requirement
 -----
 Terraform v0.12.6 and above. 
 
-Usage
+Examples
 -----
 
-| Name | Link |
+| Name | Description |
 |------|-------------|
-| complete | [url](0.1.1/examples/complete) |
+| complete | Create the following objects : vnet, subnet, route table, network security group, public ip and does the virtual network peering. |

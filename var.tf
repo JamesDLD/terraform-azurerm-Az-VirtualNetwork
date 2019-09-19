@@ -92,5 +92,6 @@ variable "network_security_groups" {
 
 variable "pips" {
   description = "Public Ips with their parameters decscribed here : https://www.terraform.io/docs/providers/azurerm/r/public_ip.html."
-  default     = []
+  type=map
+  default     = {}
 }

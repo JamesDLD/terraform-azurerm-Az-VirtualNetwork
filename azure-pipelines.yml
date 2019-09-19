@@ -49,8 +49,8 @@ stages:
           - template: pipeline/terraform.yml@Yaml_Templates
             parameters:
               version: $(terraform_version)
-              path: "./test1/"
-              package_name: "test1"
+              path: "./examples/complete"
+              package_name: "complete"
               terraform_init: true
               terraform_plan: true
               backend_secret_file_id: $(backend_and_main_secret_file_id)
@@ -76,7 +76,7 @@ stages:
                 - template: pipeline/terraform.yml@Yaml_Templates
                   parameters:
                     version: $(terraform_version)
-                    package_name: "test1"
+                    package_name: "complete"
                     terraform_apply: true
                     artifact_path: $(Pipeline.Workspace)/$(artifact_name)
 
@@ -102,7 +102,7 @@ stages:
                 - template: pipeline/terraform.yml@Yaml_Templates
                   parameters:
                     version: $(terraform_version)
-                    package_name: "test1"
+                    package_name: "complete"
                     terraform_destroy: true
                     main_secret_file_id: $(backend_and_main_secret_file_id)
                     artifact_path: $(Pipeline.Workspace)/$(artifact_name)

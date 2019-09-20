@@ -92,6 +92,6 @@ variable "network_security_groups" {
 
 variable "pips" {
   description = "Public Ips with their parameters decscribed here : https://www.terraform.io/docs/providers/azurerm/r/public_ip.html."
-  type=any #map implies a crash
+  type        = any #map implies a crash
   default     = {}
 }

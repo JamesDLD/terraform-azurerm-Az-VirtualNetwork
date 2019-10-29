@@ -70,10 +70,10 @@ variable "vnets_to_peer" {
       remote_vnet_rg_name = "infr-jdld-noprd-rg1"           #(Mandatory) 
     }
     vnets_to_peer2 = {
-      vnet_key               = "vnet2"                                #(Mandatory) 
-      remote_vnet_name       = "myproduct-perimeter-npd-vnet1"        #(Mandatory) 
-      remote_vnet_rg_name    = "infr-jdld-noprd-rg1"                  #(Mandatory) 
-      remote_subscription_id = "43c91cd1-0bbf-40c0-9c3a-401b8dfd2dd3" #(Optional) use the current subscription if not provided
+      vnet_key            = "vnet2"                         #(Mandatory) 
+      remote_vnet_name    = "myproduct-perimeter-npd-vnet1" #(Mandatory) 
+      remote_vnet_rg_name = "infr-jdld-noprd-rg1"           #(Mandatory) 
+      #remote_subscription_id = "43c91cd1-0bbf-40c0-9c3a-401b8dfd2dd3" #(Optional) use the current subscription if not provided
       #allow_virtual_network_access = ""                                     #(Optional) Controls if the VMs in the remote virtual network can access VMs in the local virtual network. Defaults to false.
       #allow_forwarded_traffic      = ""                                     #(Optional) Controls if forwarded traffic from VMs in the remote virtual network is allowed. Defaults to false.
       #allow_gateway_transit        = ""                                     #(Optional) Controls gatewayLinks can be used in the remote virtual network’s link to the local virtual network.

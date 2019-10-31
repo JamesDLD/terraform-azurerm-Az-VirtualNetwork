@@ -5,10 +5,11 @@ Test
 Requirement
 -----
 Terraform v0.12.6 and above. 
+AzureRm provider 1.36.0 and above to support the Terraform esource azurerm_bastion_host.
 
 Examples
 -----
 
 | Name | Description |
 |------|-------------|
-| complete | Create the following objects : vnet, subnet, route table, network security group, public ip and does the virtual network peering. |
+| complete | Create the following objects : vnet, subnet, azure bastion, route table, network security group, public ip and does the virtual network peering. |

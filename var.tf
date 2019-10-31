@@ -57,12 +57,6 @@ variable "subnets" {
   type        = any
 }
 
-variable "bas_lb_public_ip_id" {
-  type        = string
-  description = "Id of an existing public ip for the bastion"
-  default     = ""
-}
-
 # -
 # - Route Table
 # -

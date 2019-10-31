@@ -68,6 +68,20 @@ resource "azurerm_subnet" "subnets" {
   */
   depends_on           = [azurerm_virtual_network.vnets]
   virtual_network_name = "${var.net_prefix}-${lookup(var.virtual_networks, each.value["vnet_key"], "wrong_vnet_key_in_vnets")["prefix"]}-vnet${lookup(var.virtual_networks, each.value["vnet_key"], "wrong_vnet_key_in_vnets")["id"]}"
+
+  dynamic "delegation" {
+    for_each = lookup(each.value, "delegation", [])
+    content {
+      name = lookup(delegation.value, "name", null)
+      dynamic "service_delegation" {
+        for_each = lookup(delegation.value, "service_delegation", [])
+        content {
+          name    = lookup(service_delegation.value, "name", null)    # (Required) The name of service to delegate to. Possible values include Microsoft.BareMetal/AzureVMware, Microsoft.BareMetal/CrayServers, Microsoft.Batch/batchAccounts, Microsoft.ContainerInstance/containerGroups, Microsoft.Databricks/workspaces, Microsoft.HardwareSecurityModules/dedicatedHSMs, Microsoft.Logic/integrationServiceEnvironments, Microsoft.Netapp/volumes, Microsoft.ServiceFabricMesh/networks, Microsoft.Sql/managedInstances, Microsoft.Sql/servers, Microsoft.Web/hostingEnvironments and Microsoft.Web/serverFarms.
+          actions = lookup(service_delegation.value, "actions", null) # (Required) A list of Actions which should be delegated. Possible values include Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action, Microsoft.Network/virtualNetworks/subnets/action and Microsoft.Network/virtualNetworks/subnets/join/action.
+        }
+      }
+    }
+  }
 }
 
 # -
@@ -200,8 +214,10 @@ locals {
   subnets_with_bastion = zipmap(local.subnets_with_bastion_key, local.subnets_with_bastion_value)
 }
 
-#Using a template because the resource is not ready, feature request done here : https://github.com/terraform-providers/terraform-provider-azurerm/issues/3829
 
+/*
+#Old method before azurerm 1.36.0
+#Using a template because the resource is not ready, feature request done here : https://github.com/terraform-providers/terraform-provider-azurerm/issues/3829
 resource "azurerm_template_deployment" "bastion" {
   depends_on          = [azurerm_subnet.subnets]
   for_each            = local.subnets_with_bastion
@@ -222,6 +238,37 @@ resource "azurerm_template_deployment" "bastion" {
     existingVNETName    = "${lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]}"
     subnetAddressPrefix = each.value["address_prefix"]
     tags                = jsonencode(local.tags)
+  }
+}
+*/
+resource "azurerm_public_ip" "bastions" {
+  depends_on          = [azurerm_subnet.subnets]
+  for_each            = local.subnets_with_bastion
+  name                = "${lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]}-bas1-pip1"
+  location            = local.location
+  resource_group_name = data.azurerm_resource_group.network.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
+resource "azurerm_bastion_host" "bastions" {
+  depends_on = [azurerm_subnet.subnets]
+  for_each   = local.subnets_with_bastion
+  name       = replace("${lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]}-bas1", "-", "")
+  #Seems that naming conv is hardcoded in the resource itself, I had a comment here : https://github.com/terraform-providers/terraform-provider-azurerm/pull/4096
+  location            = local.location
+  resource_group_name = data.azurerm_resource_group.network.name
+
+  ip_configuration {
+    name = replace("${lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]}-bas1-CFG", "-", "")
+    subnet_id = [for x in azurerm_subnet.subnets : x.id if
+      x.name == each.value["subnet_name"]
+      &&
+      x.virtual_network_name == "${var.net_prefix}-${lookup(var.virtual_networks, each.value["vnet_key"], "wrong_vnet_key_in_subnets")["prefix"]}-vnet${lookup(var.virtual_networks, each.value["vnet_key"], "wrong_vnet_key_in_subnets")["id"]}"
+    ][0]
+    public_ip_address_id = [for x in azurerm_public_ip.bastions : x.id if
+      x.name == "${lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]}-bas1-pip1"
+    ][0]
   }
 }
 

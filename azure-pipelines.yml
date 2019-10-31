@@ -1,7 +1,13 @@
 #Multi-stage YAML pipeline demo.
 name: $(BuildDefinitionName).$(DayOfYear)$(Rev:.r)
 
-#trigger: none
+trigger:
+  batch: true # when a build is running, the system waits until the build is completed
+  branches:
+    include:
+      - master
+      - feature/*
+      - release/*
 
 schedules:
   - cron: "45 8 * * 4"

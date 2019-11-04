@@ -1,7 +1,7 @@
 #Set the terraform backend
 terraform {
   backend "azurerm" {
-    storage_account_name = "infrsdbx1vpcjdld1"
+    storage_account_name = "infrasdbx1vpcjdld1"
     container_name       = "tfstate"
     key                  = "Az-VirtualNetwork.complete.tfstate"
     resource_group_name  = "infr-jdld-noprd-rg1"
@@ -111,13 +111,12 @@ variable "subnets" {
       nsg_key        = "nsg1"           #(Optional) delete this line for no NSG
       rt_key         = "rt2"            #(Optional) delete this line for no Route Table
     }
-    /*
+
     snet3 = {
       vnet_key       = "vnet2"              #(Mandatory) 
       name           = "AzureBastionSubnet" #(Mandatory) 
       address_prefix = "198.18.4.0/27"      #(Mandatory) 
     }
-    */
 
   }
 }
@@ -236,6 +235,6 @@ module "Az-VirtualNetwork-Demo" {
   network_security_groups     = var.network_security_groups
   pips                        = var.pips
   vnets_to_peer               = var.vnets_to_peer
-  net_location                = "westus" #(Optional)"Network resources location if different that the resource group's location."
-  net_additional_tags         = var.net_additional_tags
+  #net_location                = "westus" #(Optional)"Network resources location if different that the resource group's location."
+  net_additional_tags = var.net_additional_tags
 }

@@ -10,6 +10,11 @@ AzureRm provider version 1.36 and above.
 Usage
 -----
 ```hcl
+#Set the terraform backend
+terraform {
+  backend "local" {} #Using a local backend just for the demo, the reco is to use a remote backend, see : https://jamesdld.github.io/terraform/Best-Practice/BestPractice-1/
+}
+
 #Set the Provider
 provider "azurerm" {
   tenant_id       = var.tenant_id

@@ -111,12 +111,14 @@ variable "subnets" {
       nsg_key        = "nsg1"           #(Optional) delete this line for no NSG
       rt_key         = "rt2"            #(Optional) delete this line for no Route Table
     }
-
+    /*
+Issue on Bastion Host being solved here : https://social.msdn.microsoft.com/Forums/en-US/27e565ac-e71f-4172-8596-6d251b193b9d/cannot-deploy-azure-bastion?forum=WAVirtualMachinesVirtualNetwork
     snet3 = {
       vnet_key       = "vnet3"              #(Mandatory) 
       name           = "AzureBastionSubnet" #(Mandatory) 
       address_prefix = "10.0.0.0/27"        #(Mandatory) 
     }
+    */
 
   }
 }

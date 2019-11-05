@@ -113,9 +113,9 @@ variable "subnets" {
     }
 
     snet3 = {
-      vnet_key       = "vnet2"              #(Mandatory) 
+      vnet_key       = "vnet3"              #(Mandatory) 
       name           = "AzureBastionSubnet" #(Mandatory) 
-      address_prefix = "198.18.4.0/27"      #(Mandatory) 
+      address_prefix = "10.0.0.0/27"        #(Mandatory) 
     }
 
   }

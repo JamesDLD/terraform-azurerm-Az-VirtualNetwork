@@ -21,7 +21,7 @@ provider "azurerm" {
   subscription_id = var.subscription_id
   client_id       = var.client_id
   client_secret   = var.client_secret
-  version         = ">= 1.36.0" #1.36.0 to support the resource azurerm_bastion_host #"=1.32.0" #No warning with version 
+  version         = ">= 1.36.0" #1.36.0 to support the resource azurerm_bastion_host #1.37.0 fix a bug with the bastion host naming #With "=1.32.0" No warning with version the nsg and route linkd
 }
 
 #Set authentication variables
@@ -104,7 +104,7 @@ variable "subnets" {
           service_delegation = [
             {
               name    = "Microsoft.ContainerInstance/containerGroups"                                                                                        # (Required) The name of service to delegate to. Possible values include Microsoft.BareMetal/AzureVMware, Microsoft.BareMetal/CrayServers, Microsoft.Batch/batchAccounts, Microsoft.ContainerInstance/containerGroups, Microsoft.Databricks/workspaces, Microsoft.HardwareSecurityModules/dedicatedHSMs, Microsoft.Logic/integrationServiceEnvironments, Microsoft.Netapp/volumes, Microsoft.ServiceFabricMesh/networks, Microsoft.Sql/managedInstances, Microsoft.Sql/servers, Microsoft.Web/hostingEnvironments and Microsoft.Web/serverFarms.
-              actions = ["Microsoft.Network/virtualNetworks/subnets/join/action", "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action"] # (Required) A list of Actions which should be delegated. Possible values include Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action, Microsoft.Network/virtualNetworks/subnets/action and Microsoft.Network/virtualNetworks/subnets/join/action.
+              actions = ["Microsoft.Network/virtualNetworks/subnets/action"] # (Required) A list of Actions which should be delegated. Possible values include Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action, Microsoft.Network/virtualNetworks/subnets/action and Microsoft.Network/virtualNetworks/subnets/join/action.
             },
           ]
         },
@@ -118,13 +118,12 @@ variable "subnets" {
       nsg_key        = "nsg1"           #(Optional) delete this line for no NSG
       rt_key         = "rt2"            #(Optional) delete this line for no Route Table
     }
-    /*
+
     snet3 = {
-      vnet_key       = "vnet2"              #(Mandatory) 
+      vnet_key       = "vnet3"              #(Mandatory) 
       name           = "AzureBastionSubnet" #(Mandatory) 
-      address_prefix = "198.18.4.0/27"      #(Mandatory) 
+      address_prefix = "10.0.0.0/27"        #(Mandatory) 
     }
-    */
 
   }
 }
@@ -214,7 +213,7 @@ variable "pips" {
       idle_timeout_in_minutes = null          #(Optional) Specifies the timeout for the TCP idle connection. The value can be set between 4 and 30 minutes.
       domain_name_label       = "galtestdemo" #(Optional) Label for the Domain Name. Will be used to make up the FQDN. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system.
       reverse_fqdn            = null          #(Optional) A fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN.
-      #zones                   = ["1"]         #(Optional) A collection containing the availability zone to allocate the Public IP in.
+      zones                   = ["1"]         #(Optional) A collection containing the availability zone to allocate the Public IP in.
     }
 
     pip2 = {
@@ -232,7 +231,8 @@ variable "net_additional_tags" {
 
 #Call module
 module "Az-VirtualNetwork-Demo" {
-  source = "git::https://github.com/JamesDLD/terraform-azurerm-Az-VirtualNetwork.git//?ref=master"
+  source                      = "JamesDLD/Az-VirtualNetwork/azurerm"
+  version                     = "0.1.3"
   net_prefix                  = "product-perim"
   network_resource_group_name = "infr-jdld-noprd-rg1"
   virtual_networks            = var.virtual_networks
@@ -241,8 +241,6 @@ module "Az-VirtualNetwork-Demo" {
   network_security_groups     = var.network_security_groups
   pips                        = var.pips
   vnets_to_peer               = var.vnets_to_peer
-  net_location                = "westus" #(Optional)"Network resources location if different that the resource group's location."
   net_additional_tags         = var.net_additional_tags
 }
-
 ```

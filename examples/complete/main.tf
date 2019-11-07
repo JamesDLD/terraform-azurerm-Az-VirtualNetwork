@@ -96,8 +96,8 @@ variable "subnets" {
           name = "acctestdelegation" #(Required) A name for this delegation.
           service_delegation = [
             {
-              name    = "Microsoft.ContainerInstance/containerGroups"                                                                                        # (Required) The name of service to delegate to. Possible values include Microsoft.BareMetal/AzureVMware, Microsoft.BareMetal/CrayServers, Microsoft.Batch/batchAccounts, Microsoft.ContainerInstance/containerGroups, Microsoft.Databricks/workspaces, Microsoft.HardwareSecurityModules/dedicatedHSMs, Microsoft.Logic/integrationServiceEnvironments, Microsoft.Netapp/volumes, Microsoft.ServiceFabricMesh/networks, Microsoft.Sql/managedInstances, Microsoft.Sql/servers, Microsoft.Web/hostingEnvironments and Microsoft.Web/serverFarms.
-              actions = ["Microsoft.Network/virtualNetworks/subnets/join/action", "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action"] # (Required) A list of Actions which should be delegated. Possible values include Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action, Microsoft.Network/virtualNetworks/subnets/action and Microsoft.Network/virtualNetworks/subnets/join/action.
+              name    = "Microsoft.ContainerInstance/containerGroups"        # (Required) The name of service to delegate to. Possible values include Microsoft.BareMetal/AzureVMware, Microsoft.BareMetal/CrayServers, Microsoft.Batch/batchAccounts, Microsoft.ContainerInstance/containerGroups, Microsoft.Databricks/workspaces, Microsoft.HardwareSecurityModules/dedicatedHSMs, Microsoft.Logic/integrationServiceEnvironments, Microsoft.Netapp/volumes, Microsoft.ServiceFabricMesh/networks, Microsoft.Sql/managedInstances, Microsoft.Sql/servers, Microsoft.Web/hostingEnvironments and Microsoft.Web/serverFarms.
+              actions = ["Microsoft.Network/virtualNetworks/subnets/action"] # (Required) A list of Actions which should be delegated. Possible values include Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action, Microsoft.Network/virtualNetworks/subnets/action and Microsoft.Network/virtualNetworks/subnets/join/action.
             },
           ]
         },
@@ -111,14 +111,14 @@ variable "subnets" {
       nsg_key        = "nsg1"           #(Optional) delete this line for no NSG
       rt_key         = "rt2"            #(Optional) delete this line for no Route Table
     }
-    /*
-Issue on Bastion Host being solved here : https://social.msdn.microsoft.com/Forums/en-US/27e565ac-e71f-4172-8596-6d251b193b9d/cannot-deploy-azure-bastion?forum=WAVirtualMachinesVirtualNetwork
+    #/*
+    #Issue on Bastion Host being solved here : https://social.msdn.microsoft.com/Forums/en-US/27e565ac-e71f-4172-8596-6d251b193b9d/cannot-deploy-azure-bastion?forum=WAVirtualMachinesVirtualNetwork
     snet3 = {
       vnet_key       = "vnet3"              #(Mandatory) 
       name           = "AzureBastionSubnet" #(Mandatory) 
       address_prefix = "10.0.0.0/27"        #(Mandatory) 
     }
-    */
+    #*/
 
   }
 }
@@ -226,9 +226,10 @@ variable "net_additional_tags" {
 
 #Call module
 module "Az-VirtualNetwork-Demo" {
-  source = "git::https://github.com/JamesDLD/terraform-azurerm-Az-VirtualNetwork.git//?ref=master"
-  #source = "../../"
+  #source = "git::https://github.com/JamesDLD/terraform-azurerm-Az-VirtualNetwork.git//?ref=master"
+  source = "../../"
   #source = "JamesDLD/Az-VirtualNetwork/azurerm"
+  #version                     = "0.2.0"
   net_prefix                  = "product-perim"
   network_resource_group_name = "infr-jdld-noprd-rg1"
   virtual_networks            = var.virtual_networks

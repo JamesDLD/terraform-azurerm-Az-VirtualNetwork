@@ -232,7 +232,7 @@ variable "net_additional_tags" {
 #Call module
 module "Az-VirtualNetwork-Demo" {
   source                      = "JamesDLD/Az-VirtualNetwork/azurerm"
-  version                     = "0.1.3"
+  version                     = "0.1.2"
   net_prefix                  = "product-perim"
   network_resource_group_name = "infr-jdld-noprd-rg1"
   virtual_networks            = var.virtual_networks

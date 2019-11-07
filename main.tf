@@ -249,6 +249,7 @@ resource "azurerm_public_ip" "bastions" {
   resource_group_name = data.azurerm_resource_group.network.name
   allocation_method   = "Static"
   sku                 = "Standard"
+  tags                = local.tags
 }
 
 resource "azurerm_bastion_host" "bastions" {
@@ -270,6 +271,7 @@ resource "azurerm_bastion_host" "bastions" {
       x.name == "${lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]}-bas1-pip1"
     ][0]
   }
+  tags = local.tags
 }
 
 # -

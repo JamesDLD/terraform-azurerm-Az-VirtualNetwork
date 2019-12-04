@@ -253,15 +253,14 @@ resource "azurerm_public_ip" "bastions" {
 }
 
 resource "azurerm_bastion_host" "bastions" {
-  depends_on = [azurerm_subnet.subnets]
-  for_each   = local.subnets_with_bastion
-  name       = replace("${lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]}-bas1", "-", "")
-  #Seems that naming conv is hardcoded in the resource itself, I had a comment here : https://github.com/terraform-providers/terraform-provider-azurerm/pull/4096
+  depends_on          = [azurerm_subnet.subnets]
+  for_each            = local.subnets_with_bastion
+  name                = "${lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]}-bas1"
   location            = local.location
   resource_group_name = data.azurerm_resource_group.network.name
 
   ip_configuration {
-    name = replace("${lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]}-bas1-CFG", "-", "")
+    name = "${lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]}-bas1-CFG"
     subnet_id = [for x in azurerm_subnet.subnets : x.id if
       x.name == each.value["subnet_name"]
       &&

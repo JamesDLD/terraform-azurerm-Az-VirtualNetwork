@@ -82,6 +82,10 @@ resource "azurerm_subnet" "subnets" {
       }
     }
   }
+
+  lifecycle {
+    ignore_changes = [network_security_group_id, route_table_id] # TODO: remove when network_security_group_id and route_table_id properties will be removed from subnet resource
+  }
 }
 
 # -

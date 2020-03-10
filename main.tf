@@ -58,7 +58,7 @@ resource "azurerm_subnet" "subnets" {
   address_prefix                                 = each.value["address_prefix"]
   service_endpoints                              = lookup(each.value, "service_endpoints", null)
   enforce_private_link_endpoint_network_policies = lookup(each.value, "enforce_private_link_endpoint_network_policies", null) #(Optional) Enable or Disable network policies for the private link endpoint on the subnet. Default valule is false. Conflicts with enforce_private_link_service_network_policies.
-
+  enforce_private_link_service_network_policies  = lookup(each.value, "enforce_private_link_service_network_policies", null)  #(Optional) Enable or Disable network policies for the private link service on the subnet. Default valule is false. Conflicts with enforce_private_link_endpoint_network_policies.
   /*
   This forces a destroy when adding a new vnet --> 
   virtual_network_name      = lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]

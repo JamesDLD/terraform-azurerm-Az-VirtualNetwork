@@ -36,26 +36,12 @@ output "public_ip_ids" {
 # -
 # - Network - Map outputs
 # -
-locals {
-  vnets_keys = keys(var.virtual_networks)
-  vnets_values = [for x in azurerm_virtual_network.vnets : {
-    id                  = x.id
-    name                = x.name
-    location            = x.location
-    resource_group_name = x.resource_group_name
-  }]
-  vnets = zipmap(local.vnets_keys, local.vnets_values)
-
-  subnets_keys = keys(var.subnets)
-  subnets_values = [for x in azurerm_subnet.subnets : {
-    id = x.id
-  }]
-  subnets = zipmap(local.subnets_keys, local.subnets_values)
-}
 
 output "vnets" {
-  value = local.vnets
+  description = "Map output of the managed virtual networks"
+  value       = { for k, x in azurerm_virtual_network.vnets : k => { "id" = x.id, "name" = x.name, "location" = x.location, resource_group_name = x.resource_group_name } }
 }
 output "subnets" {
-  value = local.subnets
+  description = "Map output of the managed subnets"
+  value       = { for k, b in azurerm_subnet.subnets : k => { "address_prefix" = b.address_prefix, "id" = b.id, "name" = b.name } }
 }

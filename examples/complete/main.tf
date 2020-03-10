@@ -246,3 +246,12 @@ module "Az-VirtualNetwork-Demo" {
   vnets_to_peer               = var.vnets_to_peer
   net_additional_tags         = var.net_additional_tags
 }
+
+
+output "subnets" {
+  value = module.Az-VirtualNetwork-Demo.subnets
+}
+
+output "vnets" {
+  value = module.Az-VirtualNetwork-Demo.vnets
+}

@@ -14,7 +14,8 @@ provider "azurerm" {
   subscription_id = var.subscription_id
   client_id       = var.client_id
   client_secret   = var.client_secret
-  version         = ">= 1.37.0" #1.36.0 to support the resource azurerm_bastion_host #1.37.0 fix a bug with the bastion host naming #With "=1.32.0" No warning with version the nsg and route linkd
+  version         = "~> 2.0"
+  features {}
 }
 
 #Set authentication variables
@@ -111,14 +112,19 @@ variable "subnets" {
       nsg_key        = "nsg1"           #(Optional) delete this line for no NSG
       rt_key         = "rt2"            #(Optional) delete this line for no Route Table
     }
-    #/*
-    #Issue on Bastion Host being solved here : https://social.msdn.microsoft.com/Forums/en-US/27e565ac-e71f-4172-8596-6d251b193b9d/cannot-deploy-azure-bastion?forum=WAVirtualMachinesVirtualNetwork
+
     snet3 = {
       vnet_key       = "vnet3"              #(Mandatory) 
       name           = "AzureBastionSubnet" #(Mandatory) 
       address_prefix = "10.0.0.0/27"        #(Mandatory) 
     }
-    #*/
+
+    endpoint = {
+      vnet_key                                       = "vnet3"        #(Mandatory) 
+      name                                           = "endpoint"     #(Mandatory) 
+      address_prefix                                 = "10.0.0.32/27" #(Mandatory) 
+      enforce_private_link_endpoint_network_policies = true           #(Optional) Enable or Disable network policies for the private link endpoint on the subnet. Default valule is false. Conflicts with enforce_private_link_service_network_policies.
+    }
 
   }
 }
@@ -226,10 +232,10 @@ variable "net_additional_tags" {
 
 #Call module
 module "Az-VirtualNetwork-Demo" {
-  source = "git::https://github.com/JamesDLD/terraform-azurerm-Az-VirtualNetwork.git//?ref=master"
-  #source = "../../"
+  #source = "git::https://github.com/JamesDLD/terraform-azurerm-Az-VirtualNetwork.git//?ref=master"
+  source = "../../"
   #source = "JamesDLD/Az-VirtualNetwork/azurerm"
-  #version                     = "0.1.2"
+  #version                     = "0.2.0"
   net_prefix                  = "product-perim"
   network_resource_group_name = "infr-jdld-noprd-rg1"
   virtual_networks            = var.virtual_networks

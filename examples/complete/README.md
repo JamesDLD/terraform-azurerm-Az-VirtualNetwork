@@ -5,7 +5,7 @@ Test
 Requirement
 -----
 Terraform v0.12.6 and above. 
-AzureRm provider version 1.36 and above.
+AzureRm provider version 2.0 and above.
 
 Usage
 -----

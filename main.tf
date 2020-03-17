@@ -213,33 +213,6 @@ locals {
   subnets_with_bastion = zipmap(local.subnets_with_bastion_key, local.subnets_with_bastion_value)
 }
 
-
-/*
-#Old method before azurerm 1.36.0
-#Using a template because the resource is not ready, feature request done here : https://github.com/terraform-providers/terraform-provider-azurerm/issues/3829
-resource "azurerm_template_deployment" "bastion" {
-  depends_on          = [azurerm_subnet.subnets]
-  for_each            = local.subnets_with_bastion
-  name                = "${lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]}-bas1-dep"
-  resource_group_name = data.azurerm_resource_group.network.name
-  template_body = file(
-    "${path.module}/AzureRmBastion_template.json",
-  )
-  deployment_mode = "Incremental"
-
-  parameters = {
-    location            = local.location
-    resourceGroupName   = data.azurerm_resource_group.network.name
-    lb_public_ip_id     = var.bas_lb_public_ip_id
-    bastionHostName     = "${lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]}-bas1"
-    subnetName          = each.value["subnet_name"]
-    publicIpAddressName = "${lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]}-bas1-pip1"
-    existingVNETName    = "${lookup(azurerm_virtual_network.vnets, each.value["vnet_key"], null)["name"]}"
-    subnetAddressPrefix = each.value["address_prefix"]
-    tags                = jsonencode(local.tags)
-  }
-}
-*/
 resource "azurerm_public_ip" "bastions" {
   depends_on          = [azurerm_subnet.subnets]
   for_each            = local.subnets_with_bastion
@@ -289,6 +262,31 @@ resource "azurerm_public_ip" "pips" {
   reverse_fqdn            = lookup(each.value, "reverse_fqdn", null)
   zones                   = lookup(each.value, "zones", null)
   tags                    = local.tags
+}
+
+# -
+# - Private Endpoints
+# -
+
+resource "azurerm_private_endpoint" "pend" {
+  for_each            = var.private_endpoints
+  name                = "${var.net_prefix}-${each.value["prefix"]}-pend${each.value["id"]}"
+  location            = local.location
+  resource_group_name = data.azurerm_resource_group.network.name
+  subnet_id           = lookup(azurerm_subnet.subnets, each.value["snet_key"], null)["id"]
+
+  dynamic "private_service_connection" {
+    for_each = each.value["private_service_connection"]
+    content {
+      name                 = lookup(private_service_connection.value, "name", null)                 #(Required) Specifies the Name of the Private Service Connection. Changing this forces a new resource to be created.
+      is_manual_connection = lookup(private_service_connection.value, "is_manual_connection", true) #(Required) Does the Private Endpoint require Manual Approval from the remote resource owner? Changing this forces a new resource to be created. NOTE: If you are trying to connect the Private Endpoint to a remote resource without having the correct RBAC permissions on the remote resource set this value to true.
+      private_connection_resource_id = lookup(private_service_connection.value, "private_connection_resource_id",
+        lookup(var.private_connection_resources, lookup(private_service_connection.value, "private_connection_resource_key", null), null)["id"]
+      )                                                                                                                                                                           #(Required) The ID of the Private Link Enabled Remote Resource which this Private Endpoint should be connected to. Changing this forces a new resource to be created.
+      subresource_names = lookup(private_service_connection.value, "subresource_names", [])                                                                                       #(Optional) A list of subresource names which the Private Endpoint is able to connect to. subresource_names corresponds to group_id. Changing this forces a new resource to be created.
+      request_message   = private_service_connection.value["is_manual_connection"] == true ? lookup(private_service_connection.value, "request_message", "Please approve") : null #(Optional) A message passed to the owner of the remote resource when the private endpoint attempts to establish the connection to the remote resource. The request message can be a maximum of 140 characters in length. Only valid if is_manual_connection is set to true.
+    }
+  }
 }
 
 # -

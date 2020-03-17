@@ -89,3 +89,17 @@ variable "pips" {
   type        = any #map implies a crash
   default     = {}
 }
+
+# -
+# - Private Endpoints
+# -
+
+variable "private_endpoints" {
+  description = "Manages a Private Endpoints. See https://www.terraform.io/docs/providers/azurerm/r/private_endpoint.html"
+  default     = {}
+}
+
+variable "private_connection_resources" {
+  description = "Private Connection resources"
+  default     = {}
+}

@@ -39,9 +39,17 @@ output "public_ip_ids" {
 
 output "vnets" {
   description = "Map output of the managed virtual networks"
-  value       = { for k, x in azurerm_virtual_network.vnets : k => { "id" = x.id, "name" = x.name, "location" = x.location, resource_group_name = x.resource_group_name } }
+  value       = { for k, b in azurerm_virtual_network.vnets : k => b }
 }
+
 output "subnets" {
   description = "Map output of the managed subnets"
-  value       = { for k, b in azurerm_subnet.subnets : k => { "address_prefix" = b.address_prefix, "id" = b.id, "name" = b.name } }
+  value       = { for k, b in azurerm_subnet.subnets : k => b }
 }
+
+output "private_endpoints" {
+  description = "Map output of the private endpoints"
+  value       = { for k, b in azurerm_private_endpoint.pend : k => b }
+}
+
+#data.azurerm_private_endpoint_connection.example.private_service_connection.0.status

@@ -22,6 +22,7 @@ Terraform resources used within the module
 | [azurerm_subnet_network_security_group_association](https://www.terraform.io/docs/providers/azurerm/r/subnet_network_security_group_association.html) | Associates a Network Security Group with a Subnet within a Virtual Network. |
 | [azurerm_bastion_host](https://www.terraform.io/docs/providers/azurerm/r/bastion_host.html) | Manages Bastion Host Instances. |
 | [azurerm_public_ip](https://www.terraform.io/docs/providers/azurerm/r/public_ip.html) | Manages Public Ips and Bastion Host Instances Public Ips. |
+| [private_endpoint](https://www.terraform.io/docs/providers/azurerm/r/private_endpoint.html) | Manages a Private Endpoints. |
 
 
 Examples

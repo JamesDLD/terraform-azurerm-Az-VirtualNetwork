@@ -60,6 +60,7 @@ variable "virtual_networks" {
       prefix        = "npd"
       address_space = ["10.0.0.0/24"]
     }
+
   }
 }
 
@@ -230,21 +231,62 @@ variable "net_additional_tags" {
   }
 }
 
+variable "private_endpoints" {
+  description = "Manages a Private Endpoints. See https://www.terraform.io/docs/providers/azurerm/r/private_endpoint.html"
+  default = {
+    pv1 = {
+      id              = "1"                                                #(Mandatory)
+      prefix          = "dataplatform"                                     #(Mandatory)
+      snet_key        = "endpoint"                                         #(Mandatory) Subnet key
+      request_message = "Approve the Pivate Enpoint for your SQL service." #(Optional) A message passed to the owner of the remote resource when the private endpoint attempts to establish the connection to the remote resource. The request message can be a maximum of 140 characters in length. Only valid if is_manual_connection is set to true.
+      private_service_connection = [
+        {
+          name                 = "sql2" #(Required) Specifies the Name of the Private Service Connection. Changing this forces a new resource to be created.
+          is_manual_connection = true   #(Required) Does the Private Endpoint require Manual Approval from the remote resource owner? Changing this forces a new resource to be created. NOTE: If you are trying to connect the Private Endpoint to a remote resource without having the correct RBAC permissions on the remote resource set this value to true.
+          #private_connection_resource_id  = "/subscriptions/xxxxxx/resourceGroups/dld-corp-mvp-dataplatform/providers/Microsoft.Sql/servers/dld-corp-mvp-sqldb-server" #(Use this variable or private_connection_resource_key) The ID of the Private Link Enabled Remote Resource which this Private Endpoint should be connected to. Changing this forces a new resource to be created.
+          private_connection_resource_key = "sql1"        #(Use this variable or private_connection_resource_key) The ID of the Private Link Enabled Remote Resource which this Private Endpoint should be connected to. Changing this forces a new resource to be created.
+          subresource_names               = ["sqlServer"] #(Optional) A list of subresource names which the Private Endpoint is able to connect to. subresource_names corresponds to group_id. Changing this forces a new resource to be created.
+        },
+      ]
+    }
+  }
+}
+
+variable "sql_servers" {
+  description = "Existing SQL Servers to source"
+  default = {
+    sql1 = {
+      name                = "dld-corp-mvp-sqldb-server"
+      resource_group_name = "dld-corp-mvp-dataplatform"
+    }
+  }
+}
+
+
 #Call module
+
+data "azurerm_sql_server" "sqls" {
+  for_each            = var.sql_servers
+  name                = each.value["name"]
+  resource_group_name = each.value["resource_group_name"]
+}
+
 module "Az-VirtualNetwork-Demo" {
   #source = "git::https://github.com/JamesDLD/terraform-azurerm-Az-VirtualNetwork.git//?ref=master"
   source = "../../"
   #source = "JamesDLD/Az-VirtualNetwork/azurerm"
   #version                     = "0.2.0"
-  net_prefix                  = "product-perim"
-  network_resource_group_name = "infr-jdld-noprd-rg1"
-  virtual_networks            = var.virtual_networks
-  subnets                     = var.subnets
-  route_tables                = var.route_tables
-  network_security_groups     = var.network_security_groups
-  pips                        = var.pips
-  vnets_to_peer               = var.vnets_to_peer
-  net_additional_tags         = var.net_additional_tags
+  net_prefix                   = "product-perim"
+  network_resource_group_name  = "infr-jdld-noprd-rg1"
+  virtual_networks             = var.virtual_networks
+  subnets                      = var.subnets
+  route_tables                 = var.route_tables
+  network_security_groups      = var.network_security_groups
+  pips                         = var.pips
+  vnets_to_peer                = var.vnets_to_peer
+  private_endpoints            = var.private_endpoints
+  private_connection_resources = { for x, y in data.azurerm_sql_server.sqls : x => y } #Map of resources containg the id of the resource to link to the private endpoint
+  net_additional_tags          = var.net_additional_tags
 }
 
 
@@ -255,3 +297,8 @@ output "subnets" {
 output "vnets" {
   value = module.Az-VirtualNetwork-Demo.vnets
 }
+
+output "private_endpoints" {
+  value = module.Az-VirtualNetwork-Demo.private_endpoints
+}
+

@@ -4,8 +4,8 @@ Test
 
 Requirement
 -----
-Terraform v0.12.6 and above. 
-AzureRm provider 1.36.0 and above to support the Terraform esource azurerm_bastion_host.
+- Terraform v0.12.23 and above. 
+- AzureRm provider version 2.1 and above.
 
 Terraform resources used within the module
 -----

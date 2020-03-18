@@ -31,3 +31,4 @@ Examples
 | Name | Description |
 |------|-------------|
 | complete | Create the following objects : vnet, subnet, azure bastion, route table, network security group, public ip and does the virtual network peering. |
+| sql-private-endpoint | Create the following objects : vnet, subnet, Azure SQL server with a dedicated private enpoint. |

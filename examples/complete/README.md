@@ -2,10 +2,14 @@ Test
 -----
 [![Build Status](https://dev.azure.com/jamesdld23/vpc_lab/_apis/build/status/JamesDLD.terraform-azurerm-Az-VirtualNetwork?branchName=master)](https://dev.azure.com/jamesdld23/vpc_lab/_build/latest?definitionId=13&branchName=master)
 
+Content
+-----
+Create the following objects : vnet, subnet, azure bastion, route table, network security group, public ip and does the virtual network peering.
+
 Requirement
 -----
-Terraform v0.12.6 and above. 
-AzureRm provider version 2.0 and above.
+Terraform v0.12.23 and above. 
+AzureRm provider version 2.1 and above.
 
 Usage
 -----
@@ -21,7 +25,8 @@ provider "azurerm" {
   subscription_id = var.subscription_id
   client_id       = var.client_id
   client_secret   = var.client_secret
-  version         = ">= 1.37.0" #1.36.0 to support the resource azurerm_bastion_host #1.37.0 fix a bug with the bastion host naming #With "=1.32.0" No warning with version the nsg and route linkd
+  version         = "~> 2.0"
+  features {}
 }
 
 #Set authentication variables
@@ -66,6 +71,7 @@ variable "virtual_networks" {
       prefix        = "npd"
       address_space = ["10.0.0.0/24"]
     }
+
   }
 }
 
@@ -103,7 +109,7 @@ variable "subnets" {
           name = "acctestdelegation" #(Required) A name for this delegation.
           service_delegation = [
             {
-              name    = "Microsoft.ContainerInstance/containerGroups"                                                                                        # (Required) The name of service to delegate to. Possible values include Microsoft.BareMetal/AzureVMware, Microsoft.BareMetal/CrayServers, Microsoft.Batch/batchAccounts, Microsoft.ContainerInstance/containerGroups, Microsoft.Databricks/workspaces, Microsoft.HardwareSecurityModules/dedicatedHSMs, Microsoft.Logic/integrationServiceEnvironments, Microsoft.Netapp/volumes, Microsoft.ServiceFabricMesh/networks, Microsoft.Sql/managedInstances, Microsoft.Sql/servers, Microsoft.Web/hostingEnvironments and Microsoft.Web/serverFarms.
+              name    = "Microsoft.ContainerInstance/containerGroups"        # (Required) The name of service to delegate to. Possible values include Microsoft.BareMetal/AzureVMware, Microsoft.BareMetal/CrayServers, Microsoft.Batch/batchAccounts, Microsoft.ContainerInstance/containerGroups, Microsoft.Databricks/workspaces, Microsoft.HardwareSecurityModules/dedicatedHSMs, Microsoft.Logic/integrationServiceEnvironments, Microsoft.Netapp/volumes, Microsoft.ServiceFabricMesh/networks, Microsoft.Sql/managedInstances, Microsoft.Sql/servers, Microsoft.Web/hostingEnvironments and Microsoft.Web/serverFarms.
               actions = ["Microsoft.Network/virtualNetworks/subnets/action"] # (Required) A list of Actions which should be delegated. Possible values include Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action, Microsoft.Network/virtualNetworks/subnets/action and Microsoft.Network/virtualNetworks/subnets/join/action.
             },
           ]
@@ -123,6 +129,13 @@ variable "subnets" {
       vnet_key       = "vnet3"              #(Mandatory) 
       name           = "AzureBastionSubnet" #(Mandatory) 
       address_prefix = "10.0.0.0/27"        #(Mandatory) 
+    }
+
+    endpoint = {
+      vnet_key                                       = "vnet3"        #(Mandatory) 
+      name                                           = "endpoint"     #(Mandatory) 
+      address_prefix                                 = "10.0.0.32/27" #(Mandatory) 
+      enforce_private_link_endpoint_network_policies = true           #(Optional) Enable or Disable network policies for the private link endpoint on the subnet. Default valule is false. Conflicts with enforce_private_link_service_network_policies.
     }
 
   }
@@ -230,9 +243,10 @@ variable "net_additional_tags" {
 }
 
 #Call module
+
 module "Az-VirtualNetwork-Demo" {
   source                      = "JamesDLD/Az-VirtualNetwork/azurerm"
-  version                     = "0.1.4"
+  version                     = "0.2.0"
   net_prefix                  = "product-perim"
   network_resource_group_name = "infr-jdld-noprd-rg1"
   virtual_networks            = var.virtual_networks
@@ -243,4 +257,14 @@ module "Az-VirtualNetwork-Demo" {
   vnets_to_peer               = var.vnets_to_peer
   net_additional_tags         = var.net_additional_tags
 }
+
+
+output "subnets" {
+  value = module.Az-VirtualNetwork-Demo.subnets
+}
+
+output "vnets" {
+  value = module.Az-VirtualNetwork-Demo.vnets
+}
+
 ```

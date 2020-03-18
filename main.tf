@@ -281,13 +281,14 @@ resource "azurerm_private_endpoint" "pend" {
       name                 = lookup(private_service_connection.value, "name", null)                 #(Required) Specifies the Name of the Private Service Connection. Changing this forces a new resource to be created.
       is_manual_connection = lookup(private_service_connection.value, "is_manual_connection", true) #(Required) Does the Private Endpoint require Manual Approval from the remote resource owner? Changing this forces a new resource to be created. NOTE: If you are trying to connect the Private Endpoint to a remote resource without having the correct RBAC permissions on the remote resource set this value to true.
       private_connection_resource_id = lookup(private_service_connection.value, "private_connection_resource_id",
-        lookup(var.private_connection_resources, lookup(private_service_connection.value, "private_connection_resource_key", null), null)["id"]
+        lookup(var.private_connection_resources, lookup(private_service_connection.value, "private_connection_resource_key", "empty"), null)["id"]
       )                                                                                                                                                                           #(Required) The ID of the Private Link Enabled Remote Resource which this Private Endpoint should be connected to. Changing this forces a new resource to be created.
       subresource_names = lookup(private_service_connection.value, "subresource_names", [])                                                                                       #(Optional) A list of subresource names which the Private Endpoint is able to connect to. subresource_names corresponds to group_id. Changing this forces a new resource to be created.
       request_message   = private_service_connection.value["is_manual_connection"] == true ? lookup(private_service_connection.value, "request_message", "Please approve") : null #(Optional) A message passed to the owner of the remote resource when the private endpoint attempts to establish the connection to the remote resource. The request message can be a maximum of 140 characters in length. Only valid if is_manual_connection is set to true.
     }
   }
 }
+
 
 # -
 # - Virtual Network Peering

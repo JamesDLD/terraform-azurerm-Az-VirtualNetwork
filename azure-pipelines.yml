@@ -21,7 +21,7 @@ variables:
   - name: vmImageName
     value: "ubuntu-latest"
   - name: terraform_version
-    value: "0.12.19"
+    value: "0.12.23"
   - name: artifact_name
     value: Az-VirtualNetwork
   - name: backend_and_main_secret_file_id
@@ -64,6 +64,16 @@ stages:
               backend_secret_file_id: $(backend_and_main_secret_file_id)
               main_secret_file_id: $(backend_and_main_secret_file_id)
 
+          - template: pipeline/terraform.yml@Yaml_Templates
+            parameters:
+              version: $(terraform_version)
+              path: "./examples/sql-private-enpoint"
+              package_name: "sql-private-enpoint"
+              terraform_init: true
+              terraform_plan: true
+              backend_secret_file_id: $(backend_and_main_secret_file_id)
+              main_secret_file_id: $(backend_and_main_secret_file_id)
+
           - publish: "./ArtifactPublishLocation" # Local path to include in the Artifact
             artifact: "$(artifact_name)"
 
@@ -85,6 +95,13 @@ stages:
                   parameters:
                     version: $(terraform_version)
                     package_name: "complete"
+                    terraform_apply: true
+                    artifact_path: $(Pipeline.Workspace)/$(artifact_name)
+
+                - template: pipeline/terraform.yml@Yaml_Templates
+                  parameters:
+                    version: $(terraform_version)
+                    package_name: "sql-private-enpoint"
                     terraform_apply: true
                     artifact_path: $(Pipeline.Workspace)/$(artifact_name)
 
@@ -114,3 +131,12 @@ stages:
                     terraform_destroy: true
                     main_secret_file_id: $(backend_and_main_secret_file_id)
                     artifact_path: $(Pipeline.Workspace)/$(artifact_name)
+
+                - template: pipeline/terraform.yml@Yaml_Templates
+                  parameters:
+                    version: $(terraform_version)
+                    package_name: "sql-private-enpoint"
+                    terraform_destroy: true
+                    main_secret_file_id: $(backend_and_main_secret_file_id)
+                    artifact_path: $(Pipeline.Workspace)/$(artifact_name)
+                    

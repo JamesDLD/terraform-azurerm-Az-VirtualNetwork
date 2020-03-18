@@ -62,6 +62,7 @@ variable "subnets" {
 # -
 variable "route_tables" {
   description = "The route tables with their properties."
+  default     = {}
   type        = any
 }
 
@@ -71,6 +72,7 @@ variable "route_tables" {
 variable "network_security_groups" {
   description = "The network security groups with their properties."
   type        = any
+  default     = {}
   /*
   #This implies a crash described here https://github.com/hashicorp/terraform/issues/22082 -->
   type = list(object({
@@ -101,5 +103,7 @@ variable "private_endpoints" {
 
 variable "private_connection_resources" {
   description = "Private Connection resources"
-  default     = {}
+  default = {
+    empty = { id = "empty" }
+  }
 }

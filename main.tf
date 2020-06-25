@@ -55,7 +55,7 @@ resource "azurerm_subnet" "subnets" {
   for_each                                       = var.subnets
   name                                           = each.value["name"]
   resource_group_name                            = data.azurerm_resource_group.network.name
-  address_prefix                                 = each.value["address_prefix"]
+  address_prefixes                                 = each.value["address_prefixes"]
   service_endpoints                              = lookup(each.value, "service_endpoints", null)
   enforce_private_link_endpoint_network_policies = lookup(each.value, "enforce_private_link_endpoint_network_policies", null) #(Optional) Enable or Disable network policies for the private link endpoint on the subnet. Default valule is false. Conflicts with enforce_private_link_service_network_policies.
   enforce_private_link_service_network_policies  = lookup(each.value, "enforce_private_link_service_network_policies", null)  #(Optional) Enable or Disable network policies for the private link service on the subnet. Default valule is false. Conflicts with enforce_private_link_endpoint_network_policies.
@@ -207,7 +207,7 @@ locals {
   subnets_with_bastion_key = [for x in var.subnets : "${x.vnet_key}_${x.name}" if x.name == "AzureBastionSubnet"]
   subnets_with_bastion_value = [for x in var.subnets : {
     subnet_name    = x.name
-    address_prefix = x.address_prefix
+    address_prefixes = x.address_prefixes
     vnet_key       = x.vnet_key
   } if x.name == "AzureBastionSubnet"]
   subnets_with_bastion = zipmap(local.subnets_with_bastion_key, local.subnets_with_bastion_value)

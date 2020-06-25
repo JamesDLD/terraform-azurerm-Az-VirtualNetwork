@@ -70,7 +70,7 @@ variable "subnets" {
     endpoint-snet1 = {
       vnet_key                                       = "hub-noprd1"     #(Mandatory) 
       name                                           = "endpoint-snet1" #(Mandatory) 
-      address_prefix                                 = "10.0.0.32/27"   #(Mandatory) 
+      address_prefixes                                 = ["10.0.0.32/27"]   #(Mandatory) 
       enforce_private_link_endpoint_network_policies = true             #(Optional) Enable or Disable network policies for the private link endpoint on the subnet. Default valule is false. Conflicts with enforce_private_link_service_network_policies.
     }
 

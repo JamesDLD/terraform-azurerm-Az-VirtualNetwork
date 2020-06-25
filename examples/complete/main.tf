@@ -89,7 +89,7 @@ variable "subnets" {
     snet1 = {
       vnet_key          = "vnet1"                                #(Mandatory) 
       name              = "test1"                                #(Mandatory) 
-      address_prefix    = "198.18.1.0/26"                        #(Mandatory) 
+      address_prefixes    = ["198.18.1.0/26"]                        #(Mandatory) 
       nsg_key           = "nsg1"                                 #(Optional) delete this line for no NSG
       rt_key            = "rt1"                                  #(Optional) delete this line for no Route Table
       service_endpoints = ["Microsoft.Sql", "Microsoft.Storage"] #(Optional) delete this line for no Service Endpoints
@@ -109,7 +109,7 @@ variable "subnets" {
     snet2 = {
       vnet_key       = "vnet2"          #(Mandatory) 
       name           = "test1"          #(Mandatory) 
-      address_prefix = "198.18.4.32/27" #(Mandatory) 
+      address_prefixes = ["198.18.4.32/27"] #(Mandatory) 
       nsg_key        = "nsg1"           #(Optional) delete this line for no NSG
       rt_key         = "rt2"            #(Optional) delete this line for no Route Table
     }
@@ -117,13 +117,13 @@ variable "subnets" {
     snet3 = {
       vnet_key       = "vnet3"              #(Mandatory) 
       name           = "AzureBastionSubnet" #(Mandatory) 
-      address_prefix = "10.0.0.0/27"        #(Mandatory) 
+      address_prefixes = ["10.0.0.0/27"]        #(Mandatory) 
     }
 
     endpoint = {
       vnet_key                                       = "vnet3"        #(Mandatory) 
       name                                           = "endpoint"     #(Mandatory) 
-      address_prefix                                 = "10.0.0.32/27" #(Mandatory) 
+      address_prefixes                                 = ["10.0.0.32/27"] #(Mandatory) 
       enforce_private_link_endpoint_network_policies = true           #(Optional) Enable or Disable network policies for the private link endpoint on the subnet. Default valule is false. Conflicts with enforce_private_link_service_network_policies.
     }
 
@@ -234,8 +234,8 @@ variable "net_additional_tags" {
 #Call module
 
 module "Az-VirtualNetwork-Demo" {
-  source = "git::https://github.com/JamesDLD/terraform-azurerm-Az-VirtualNetwork.git//?ref=master"
-  #source = "../../"
+  #source = "git::https://github.com/JamesDLD/terraform-azurerm-Az-VirtualNetwork.git//?ref=master"
+  source = "../../"
   #source = "JamesDLD/Az-VirtualNetwork/azurerm"
   #version                     = "0.2.0"
   net_prefix                  = "product-perim"

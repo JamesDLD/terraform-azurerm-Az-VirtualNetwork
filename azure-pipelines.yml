@@ -21,7 +21,7 @@ variables:
   - name: vmImageName
     value: "ubuntu-latest"
   - name: terraform_version
-    value: "0.12.23"
+    value: "0.12.26"
   - name: artifact_name
     value: Az-VirtualNetwork
   - name: backend_and_main_secret_file_id

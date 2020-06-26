@@ -234,8 +234,8 @@ variable "net_additional_tags" {
 #Call module
 
 module "Az-VirtualNetwork-Demo" {
-  #source = "git::https://github.com/JamesDLD/terraform-azurerm-Az-VirtualNetwork.git//?ref=master"
-  source = "../../"
+  source = "git::https://github.com/JamesDLD/terraform-azurerm-Az-VirtualNetwork.git//?ref=master"
+  #source = "../../"
   #source = "JamesDLD/Az-VirtualNetwork/azurerm"
   #version                     = "0.2.0"
   net_prefix                  = "product-perim"
